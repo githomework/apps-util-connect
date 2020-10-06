@@ -12,12 +12,10 @@ import (
 )
 
 // "<user name>/<password>@<server name>:1521/<service name>"
-func Oracle(key string, dsn string) *sqlx.DB {
+// Calling code should handle error.
+func Oracle(key string, dsn string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("oci8", secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Println(err)
-	}
-	return db
+	return db, err
 }
 
 func OracleMust(key string, dsn string) *sqlx.DB {
@@ -29,12 +27,10 @@ func OracleMust(key string, dsn string) *sqlx.DB {
 }
 
 // "hdb://<user name>:<password>@<server name>:<port>"
-func HANA(key string, dsn string) *sqlx.DB {
+// Calling code should handle error.
+func HANA(key string, dsn string) (*sqlx.DB, error) {
 	db, err := sqlx.Open(driver.DriverName, secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Println(err)
-	}
-	return db
+	return db, err
 }
 
 func HANAMust(key string, dsn string) *sqlx.DB {
@@ -46,12 +42,10 @@ func HANAMust(key string, dsn string) *sqlx.DB {
 }
 
 // "server=<server name>;user id=<user name>;password=<password>;port=1433;database=<database name>;encrypt=disable"
-func MSSQL(key string, dsn string) *sqlx.DB {
+// Calling code should handle error.
+func MSSQL(key string, dsn string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("mssql", secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Println(err)
-	}
-	return db
+	return db, err
 }
 
 func MSSQLMust(key string, dsn string) *sqlx.DB {
@@ -63,12 +57,10 @@ func MSSQLMust(key string, dsn string) *sqlx.DB {
 }
 
 // "host=<server name> user=<user name> dbname=<database name> password=<password> sslmode=disable port=5432"
-func Postgres(key string, dsn string) *sqlx.DB {
+// Calling code should handle error.
+func Postgres(key string, dsn string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Println(err)
-	}
-	return db
+	return db, err
 }
 
 func PostgresMust(key string, dsn string) *sqlx.DB {
