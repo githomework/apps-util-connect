@@ -61,6 +61,7 @@ func MSSQLMust(dsn string) *sqlx.DB {
 	return db
 }
 
+// "host=<server name> user=<user name> dbname=<database name> password=<password> sslmode=disable port=5432"
 func Postgres(dsn string) *sqlx.DB {
 	db, err := sqlx.Open("postgres", dsn)
 	if err != nil {
