@@ -13,95 +13,90 @@ import (
 
 // "<user name>/<password>@<server name>:1521/<service name>"
 // Calling code should handle error.
-func Oracle(key string, dsn string) (*sqlx.DB, error) {
-	if key == "" {
-		return sqlx.Open("oci8", dsn)
-	}
-	return sqlx.Open("oci8", secret.Decrypt(key, dsn))
+func Oracle(dsn string) (*sqlx.DB, error) {
+	return open("oci8", "", dsn)
 }
 
-func OracleMust(key string, dsn string) *sqlx.DB {
-	if key == "" {
-		db, err := sqlx.Open("oci8", dsn)
-		if err != nil {
-			log.Panicln(err)
-		}
-		return db
-	}
-	db, err := sqlx.Open("oci8", secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Panicln(err)
-	}
-	return db
+func OracleWithKey(key string, dsn string) (*sqlx.DB, error) {
+	return open("oci8", key, dsn)
+}
+
+func OracleMust(dsn string) *sqlx.DB {
+	return openMust("oci8", "", dsn)
+}
+
+func OracleMustWithKey(key string, dsn string) *sqlx.DB {
+	return openMust("oci8", key, dsn)
 }
 
 // "hdb://<user name>:<password>@<server name>:<port>"
 // Calling code should handle error.
-func HANA(key string, dsn string) (*sqlx.DB, error) {
-	if key == "" {
-		return sqlx.Open(driver.DriverName, dsn)
-	}
-	return sqlx.Open(driver.DriverName, secret.Decrypt(key, dsn))
+func HANA(dsn string) (*sqlx.DB, error) {
+	return open(driver.DriverName, "", dsn)
 }
 
-func HANAMust(key string, dsn string) *sqlx.DB {
-	if key == "" {
-		db, err := sqlx.Open(driver.DriverName, dsn)
-		if err != nil {
-			log.Panicln(err)
-		}
-		return db
-	}
-	db, err := sqlx.Open(driver.DriverName, secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Panicln(err)
-	}
-	return db
+func HANAWithKey(key string, dsn string) (*sqlx.DB, error) {
+	return open(driver.DriverName, key, dsn)
+}
+func HANAMust(dsn string) *sqlx.DB {
+	return openMust(driver.DriverName, "", dsn)
+}
+func HANAMustWithKey(key string, dsn string) *sqlx.DB {
+	return openMust(driver.DriverName, key, dsn)
 }
 
 // "server=<server name>;user id=<user name>;password=<password>;port=1433;database=<database name>;encrypt=disable"
 // Calling code should handle error.
-func MSSQL(key string, dsn string) (*sqlx.DB, error) {
-	if key == "" {
-		return sqlx.Open("mssql", dsn)
-	}
-	db, err := sqlx.Open("mssql", secret.Decrypt(key, dsn))
-	return db, err
+func MSSQL(dsn string) (*sqlx.DB, error) {
+	return open("mssql", "", dsn)
 }
 
-func MSSQLMust(key string, dsn string) *sqlx.DB {
-	if key == "" {
-		db, err := sqlx.Open("mssql", dsn)
-		if err != nil {
-			log.Panicln(err)
-		}
-		return db
-	}
-	db, err := sqlx.Open("mssql", secret.Decrypt(key, dsn))
-	if err != nil {
-		log.Panicln(err)
-	}
-	return db
+func MSSQLWithKey(key string, dsn string) (*sqlx.DB, error) {
+	return open("mssql", key, dsn)
+}
+
+func MSSQLMust(dsn string) *sqlx.DB {
+	return openMust("mssql", "", dsn)
+}
+
+func MSSQLMustWithKey(key string, dsn string) *sqlx.DB {
+	return openMust("mssql", key, dsn)
 }
 
 // "host=<server name> user=<user name> dbname=<database name> password=<password> sslmode=disable port=5432"
 // Calling code should handle error.
-func Postgres(key string, dsn string) (*sqlx.DB, error) {
-	if key == "" {
-		return sqlx.Open("postgres", dsn)
-	}
-	return sqlx.Open("postgres", secret.Decrypt(key, dsn))
+func Postgres(dsn string) (*sqlx.DB, error) {
+	return open("postgres", "", dsn)
 }
 
-func PostgresMust(key string, dsn string) *sqlx.DB {
+func PostgresWithKey(key string, dsn string) (*sqlx.DB, error) {
+	return open("postgres", key, dsn)
+}
+
+func PostgresMust(dsn string) *sqlx.DB {
+	return openMust("postgres", "", dsn)
+}
+
+func PostgresMustWithKey(key string, dsn string) *sqlx.DB {
+	return openMust("postgres", key, dsn)
+}
+
+func open(driverName string, key, dsn string) (*sqlx.DB, error) {
 	if key == "" {
-		db, err := sqlx.Open("postgres", dsn)
+		return sqlx.Open(driverName, dsn)
+	}
+	return sqlx.Open(driverName, secret.Decrypt(key, dsn))
+}
+
+func openMust(driverName string, key, dsn string) *sqlx.DB {
+	if key == "" {
+		db, err := sqlx.Open(driverName, dsn)
 		if err != nil {
 			log.Panicln(err)
 		}
 		return db
 	}
-	db, err := sqlx.Open("postgres", secret.Decrypt(key, dsn))
+	db, err := sqlx.Open(driverName, secret.Decrypt(key, dsn))
 	if err != nil {
 		log.Panicln(err)
 	}
